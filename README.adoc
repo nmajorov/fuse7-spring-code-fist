@@ -1,4 +1,5 @@
-= Spring-Boot Camel CXF JAXRS QuickStart
+= Expenses web service example
+= Spring-Boot Camel CXF JAXRS 
 
 
 This example demonstrates how you can use Apache CXF with Spring Boot
@@ -6,7 +7,7 @@ based on a https://github.com/fabric8io/base-images#java-base-images[fabric8 Jav
 The quickstart uses Spring Boot to configure a little application that includes a CXF JAXRS endpoint with Swagger enabled.
 
 
-We use https://kotlinlang.org[Kotlin language] to write rest services and entities.
+In this project I  use https://kotlinlang.org[Kotlin language] to write rest services and entities.
 
 so most of source and test located in
 
@@ -131,5 +132,4 @@ to run local with gradle use:
 
 You can then access the CXF JAXRS endpoint directly from your Web browser, e.g.:
 
-- <http://localhost:8080/services/helloservice/sayHello/FIS>
-will display "Hello FIS, Welcome to CXF RS Spring Boot World!!!"
+- <http://localhost:8080/services/helloservice/>
