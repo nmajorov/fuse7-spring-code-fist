@@ -7,8 +7,10 @@
 
 
 oc new-app --template s2i-fuse73-spring-boot-camel \
---param MAVEN_ARGS="-DskipTests" --param GIT_REPO="https://github.com/nmajorov/integration-workshop.git" \
---context-dir=code-first-approach
+--param MAVEN_ARGS="package -DskipTests -Dfabric8.skip -e -B" \
+--param GIT_REPO="https://github.com/nmajorov/fuse7-spring-code-fist.git"  \
+--param GIT_REF="master"
+
 
 
 
