@@ -4,15 +4,15 @@
 
 DOCKER_CONF=$HOME/.docker/config.json
 
- oc create secret generic rhpullsecret \
+ oc create secret generic rhpull-secret \
                 --from-file=.dockerconfigjson=$DOCKER_CONF \
                 --type=kubernetes.io/dockerconfigjson
 
 
-oc secrets link builder pull-secret                                                                                                                                                           
+oc secrets link builder rhpull-secret                                                                                                                                                           
                                                                                                                                                                                               
                                                                                                                                                                                               
-oc secrets link default pull-secret --for=pull
+oc secrets link default rhpull-secret --for=pull
 
 
 
