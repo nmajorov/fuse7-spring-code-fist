@@ -62,10 +62,49 @@ $ cd my_openshift/spring-boot-cxf-jaxrs
 ----
 
 . Build and deploy the project to the OpenShift cluster:
-+
-[source,bash,options="nowrap",subs="attributes+"]
+
+
+[source]
 ----
 $ mvn clean -DskipTests fabric8:deploy -Popenshift
+----
+
+
+your Fuse7  images in your OpenShift maybe outdated so several steps can be done.
+
+
+Create a secrets to pull images in your namespace:
+
+[source]
+----
+DOCKER_CONF=$HOME/.docker/config.json
+
+ oc create secret generic rhpull-secret \
+                --from-file=.dockerconfigjson=$DOCKER_CONF \
+                --type=kubernetes.io/dockerconfigjson
+
+
+oc secrets link builder rhpull-secret  
+ 
+----
+
+Add image-stream to current namespace: 
+
+[source]
+----
+
+   
+   oc import-image fuse-java-openshift:1.4  --from=registry.redhat.io/fuse7/fuse-java-openshift:1.4 --confirm
+----
+
+
+deploy application with specific image-stream parameters:
+
+[source]
+----
+
+ ./deploy_openshift.3 -Dfabric8.generator.from=nproject/fuse-java-openshift:1.4
+
 ----
 
 . In your browser, navigate to the `MY_PROJECT_NAME` project in the OpenShift console.
