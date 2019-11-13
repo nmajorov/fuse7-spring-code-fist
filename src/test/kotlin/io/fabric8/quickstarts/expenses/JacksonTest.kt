@@ -31,7 +31,7 @@ class JacksonTest {
 
     @Test
     @Throws(Exception::class)
-    fun testSerializeSingleObject() {
+    fun testSerializeSingleExpenseObject() {
          var expense = Expense()
 
         logger.info("************ json from single empty object: " + this.json.write(listOf(expense)).toString())
@@ -42,7 +42,7 @@ class JacksonTest {
                 description = "Schloss Schoenbrunn entry fee")
 
         logger.info("************ json from initialized object: " + this.json.write(listOf(expense)).toString())
-        var listExpenses = this.json.parse("[{\"amount\":30,\"id\":null," +
+        val listExpenses = this.json.parse("[{\"amount\":30,\"id\":null," +
         "\"description\":\"Schloss Schoenbrunn entry fee\",\"createdAT\":\"2019-10-01\",\"tstamp\":\"2019-10-01\"}]").`object` as List<Expense>
 
         assertEquals(expense.amount , listExpenses[0].amount)
@@ -54,25 +54,25 @@ class JacksonTest {
 
     @Test
     @Throws(Exception::class)
-    fun testSerializeCollection(){
+    fun testSerializeExpensesCollection(){
 
-        val simpleCollection = arrayListOf<Expense>(Expense(amount = 30,
+        val simpleCollection = arrayListOf(Expense(amount = 30,
                 createdAT = LocalDate.of(2019,10,1),
                 description = "Schloss Schoenbrunn entry fee"),Expense(amount = 10,
                 createdAT = LocalDate.of(2019,10,1),
                 description = "Lunch"))
 
         val jsonFromObj = this.json.write(simpleCollection)
-        logger.info("************ json array : ${jsonFromObj}" )
+        logger.info("************ json array : $jsonFromObj" )
         val  testJSON ="""
             [{"ID":"1", "DESCRIPTION":"Lunch", "AMOUNT":"10", "CREATED":"2019-09-29", "TSTAMP":"2019-10-05"},
              {"ID":"2", 
             "DESCRIPTION":"Schloss Schoenbrunn entry fee", "AMOUNT":"30", "CREATED":"2019-09-29", "TSTAMP":"2019-10-05"}]
         """.trimIndent().toLowerCase()
 
-        logger.info("************ json array from string : ${testJSON}" )
+        logger.info("************ json array from string : $testJSON" )
         val entities: List<Expense> = this.json.parse(testJSON).`object` as List<Expense>
-        assertTrue(entities is List<Expense> )
+        assertTrue(entities.isEmpty() == false )
 
     }
 }
