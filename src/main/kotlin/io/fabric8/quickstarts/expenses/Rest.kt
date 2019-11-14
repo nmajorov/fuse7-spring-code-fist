@@ -1,7 +1,6 @@
 package io.fabric8.quickstarts.expences
 
 import io.fabric8.quickstarts.expenses.Expense
-import io.fabric8.quickstarts.expenses.User
 import io.swagger.annotations.*
 import org.apache.camel.CamelContext
 import org.springframework.stereotype.Service
@@ -14,42 +13,9 @@ import javax.ws.rs.core.Response
 //check swagger old annotation style
 // /https://github.com/swagger-api/swagger-core/wiki/Annotations
 
-@Path("/users")
-interface UsersService{
-    @ApiResponses(
-            ApiResponse(code = 200, message = "successful operation",response = Response::class),
-            ApiResponse(code = 405, message = "invalid input") ,
-            ApiResponse(code = 500, message = "error at creating a user")
-    )
-    @PUT
-    @Path("/")
-    fun createUser(user:User):Response
-
-    @ApiOperation(value = "Login user in the system")
-    fun login(login:String,password:String) : Response
-
-    @ApiOperation(value = "Update user information the system")
-    fun updateUser(user:User) : Response
-}
 
 
-/**
- * implementation of User services
- *
- */
-class UsersServiveImpl:UsersService{
-    override fun createUser(user: User): Response {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 
-    override fun login(login: String, password: String): Response {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun updateUser(user: User): Response {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-}
 
 /**
  * expenses rest services

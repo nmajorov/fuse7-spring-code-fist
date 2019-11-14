@@ -18,21 +18,6 @@ import java.time.format.DateTimeFormatter
 
 //https://spring.io/guides/tutorials/spring-boot-kotlin/
 
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-class User(
-		@JsonProperty(value = "login")
-		var login: String,
-		@JsonProperty(value = "password")
-		var password :String,
-		@JsonProperty(value = "fistname")
-        var firstname: String,
-		@JsonProperty(value = "lastname")
-        var lastname: String,
-		@JsonProperty(value = "id")
-        var id: Long? = null
-)
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 class Expense (
 		@JsonProperty(value = "id")
