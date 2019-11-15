@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner
 import java.time.LocalDateTime
 import java.time.Month
 import javax.ws.rs.core.GenericType
+import kotlin.math.absoluteValue
 
 
 /**
@@ -33,7 +34,9 @@ class SpringRestTest {
 
     @Test
     fun createExpensesTest() {
-       logger.info("*** rest path settings: ${cxfPathProperty}")
+        logger.info("*** start test createExpensesTest ****")
+        logger.info("*** rest path settings: ${cxfPathProperty}")
+
 
 		val expenseService = JAXRSClient.getExpenecesService("8080",cxfPathProperty)
 
@@ -46,6 +49,7 @@ class SpringRestTest {
 
 //        Assert.assertEquals("Bar", simpleComponent.foo())
         assertNotNull(resp)
+        assertTrue(resp.status == 200)
     }
 
     @Test
@@ -67,6 +71,33 @@ class SpringRestTest {
         assertTrue(entities.isNotEmpty())
         assertNotNull(entities[0].id)
     }
+
+    @Test
+    fun getOneExpense() {
+
+        logger.info("*** tes  path settings: ${cxfPathProperty}")
+
+        val rest = JAXRSClient.getExpenecesService("8080",cxfPathProperty)
+
+        var ldt =LocalDateTime.of(2019, Month.NOVEMBER, 14, 8, 7, 0)
+
+        val resp= rest.create(Expense(amount = 3,
+                createdAT = ldt.toLocalDate(),
+                //     createdAT = LocalDateTime.of(2019, Month.SEPTEMBER, 29, 12, 17, 0),
+                description = "Coffee"))
+
+        val newExpense = resp.readEntity(object : GenericType<Expense>() {})
+
+        assertNotNull(newExpense.id)
+
+        newExpense.id?.let {it ->
+
+            val expenseFoundById = rest.find(it.absoluteValue).readEntity(object : GenericType<Expense>() {})
+            assertTrue(expenseFoundById .equals(newExpense))
+        }
+
+    }
+
 }
 
 

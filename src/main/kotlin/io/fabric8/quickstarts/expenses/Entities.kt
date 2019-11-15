@@ -40,6 +40,7 @@ class Expense (
         var tstamp: LocalDate? = LocalDate.now()
 ){
 	constructor():this(null,"",null,0)
+	override fun toString(): String = """[ id: ${id} | description: ${description} | amout: ${amount} | createAt: ${createdAT} ] """
 }
 
 
