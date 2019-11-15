@@ -2,8 +2,7 @@ package io.fabric8.quickstarts.expenses
 
 import io.fabric8.quickstarts.cxf.jaxrs.SampleRestApplication
 import org.apache.commons.logging.LogFactory
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Value
@@ -101,6 +100,43 @@ class SpringRestTest {
                   assertTrue(expenseFoundById.description == newExpense.description)
                   assertTrue(expenseFoundById.amount == newExpense.amount)
               }
+        }
+
+    }
+
+
+    @Test
+    fun deleteExpense() {
+
+        logger.info("*** deleteExpense ****")
+
+        val rest = JAXRSClient.getExpenecesService("8080", cxfPathProperty)
+
+        val ldt = LocalDateTime.of(2019, Month.NOVEMBER, 15, 13, 8, 0)
+
+        val newExpense = Expense(amount = 139,
+                createdAT = ldt.toLocalDate(),
+                //     createdAT = LocalDateTime.of(2019, Month.SEPTEMBER, 29, 12, 17, 0),
+                description = "Apple Magic Keyboard")
+
+        run {
+            rest.create(newExpense)
+                    .readEntity(object : GenericType<List<Map<String, Int>>>() {}) as List<Map<String, Int>>
+        }.let {
+            //got id returned from database
+            val id = it[0]["ID"]!!.toLong()
+            //check  if it not null
+            assertNotNull(id)
+            rest.delete(id).run {
+                assertTrue(this.status == 200)
+                //additional checks
+                // we should not find deleted entity  it in database
+                val expenseFoundById = rest.find(id).readEntity(object : GenericType<Any>() {})
+                assertNull{expenseFoundById}
+            }
+
+
+
         }
 
     }

@@ -10,8 +10,8 @@ import java.sql.Date
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
 import javax.ws.rs.core.Response
-import org.apache.cxf.helpers.HttpHeaderHelper.getHeader
-import java.lang.Object
+
+
 
 
 
@@ -43,7 +43,12 @@ interface ExpensesService {
     @DELETE
     @Path("/{id}")
     @ApiOperation("Delete an expense")
-    fun delete(@PathParam("id") @ApiParam("Expense id to delete")  id:Long)
+    @ApiResponses(
+            ApiResponse(code = 200, message = "successful operation",response = Response::class),
+            ApiResponse(code = 400, message = "invalid input"),
+            ApiResponse(code = 404 , message = "expense not found")
+    )
+    fun delete(@PathParam("id") @ApiParam("Expense id to delete")  id:Long) :Response
 
     @POST
     @Path("/")
@@ -126,17 +131,25 @@ class ExpensesServiceImpl : ExpensesService {
                 .withBody(id).send()
         val camelResult= exchange.getIn().body as List<Map<String,Any>>
 
-        //convert sql result to the entities
-        camelResult.get(0).let{
-            val entity =Expense(id= (it.get("id".toUpperCase()) as Long),
-                    description = (it.get("description".toUpperCase()) as String),
-                    amount = (it.get("amount".toUpperCase()) as Long),
-                    createdAT = (it.get("created".toUpperCase()) as Date).toLocalDate(),
-                    tstamp = (it.get("tstamp".toUpperCase()) as Date).toLocalDate()
-            )
+        if (camelResult.isNotEmpty()){
+            //convert sql result to the entities
+            camelResult.get(0).let{
+                val entity =Expense(id= (it.get("id".toUpperCase()) as Long),
+                        description = (it.get("description".toUpperCase()) as String),
+                        amount = (it.get("amount".toUpperCase()) as Long),
+                        createdAT = (it.get("created".toUpperCase()) as Date).toLocalDate(),
+                        tstamp = (it.get("tstamp".toUpperCase()) as Date).toLocalDate()
+                )
 
-            return Response.ok(entity, MediaType.APPLICATION_JSON).build()
+                return Response.ok(entity, MediaType.APPLICATION_JSON).build()
+            }
         }
+
+
+        val builder = Response.status(Response.Status.NOT_FOUND)
+        builder.entity("{}")
+
+        return builder.build()
 
     }
 
@@ -158,10 +171,12 @@ class ExpensesServiceImpl : ExpensesService {
     }
 
 
-    @ApiOperation(value = "Delete expense by id ",
-            notes = "")
-    override fun delete(id: Long) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+    override fun delete(id: Long) : Response {
+        logger.info("got expense id to delete: $id")
+        val exchange = this.camelContext.createFluentProducerTemplate().to("direct:delete-one")
+                .withBody(id).send()
+        return Response.ok().build()
     }
 
 }

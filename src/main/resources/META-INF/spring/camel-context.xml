@@ -20,13 +20,13 @@
       <to uri="sql:select * from EXPENSES WHERE ID=:#${body}"/>
       <log message="${body}"/>
     </route>
-    <!--  
-     <route id="start" startupOrder="1">
-      <from id="_from3"
-        uri="quartz2://myGroup/myTimerName?cron=0/2+*+*+*+*+?" />
-      <to id="_to4" uri="direct:in" />
-    </route>
-    -->
+
+     <route id="delete-one">
+         <from uri="direct:delete-one"/>
+         <log message="delete entity with id: ${body}"/>
+         <to uri="sql:DELETE FROM EXPENSES WHERE ID = :#${body}"/>
+     </route>
+
   </camelContext>
   <bean class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close" id="dataSource">
     <property name="driverClass" value="${db.driver}"/>
