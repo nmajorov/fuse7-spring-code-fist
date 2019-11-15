@@ -95,7 +95,7 @@ class ExpensesServiceImpl : ExpensesService {
     @ApiOperation(value = "Create expense in system",
             notes = "")
     override fun create(expense: Expense): Response {
-        logger.info("got expense ${expense}")
+        logger.info("got expense to insert: ${expense}")
         val endpoint = camelContext.getEndpoint("direct:insert")
         val exchange =  endpoint.createExchange();
         exchange.getIn().setHeader(SqlConstants.SQL_RETRIEVE_GENERATED_KEYS, true);
@@ -106,11 +106,11 @@ class ExpensesServiceImpl : ExpensesService {
         val out = camelContext.createProducerTemplate().send(endpoint,exchange).out
 
         val generatedKeys = out.getHeader(SqlConstants.SQL_GENERATED_KEYS_DATA, List::class.java)
-                as List<Map<String,Any>>
+                as List<Map<String, Int>>
 
-       logger.info("get generated keys ${generatedKeys}")
+        logger.info("get generated keys ${generatedKeys}")
 
-        return Response.ok().build()
+        return Response.ok(generatedKeys, MediaType.APPLICATION_JSON).build()
     }
 
 
@@ -120,21 +120,24 @@ class ExpensesServiceImpl : ExpensesService {
     }
 
 
+
     override fun find(id: Long):Response{
         val exchange = this.camelContext.createFluentProducerTemplate().to("direct:select-one")
                 .withBody(id).send()
         val camelResult= exchange.getIn().body as List<Map<String,Any>>
-        val entities = mutableListOf<Expense>()
+
         //convert sql result to the entities
-        camelResult.forEach{
-            entities.add(Expense(id= (it.get("id".toUpperCase()) as Long),
+        camelResult.get(0).let{
+            val entity =Expense(id= (it.get("id".toUpperCase()) as Long),
                     description = (it.get("description".toUpperCase()) as String),
                     amount = (it.get("amount".toUpperCase()) as Long),
                     createdAT = (it.get("created".toUpperCase()) as Date).toLocalDate(),
                     tstamp = (it.get("tstamp".toUpperCase()) as Date).toLocalDate()
-            ))
+            )
+
+            return Response.ok(entity, MediaType.APPLICATION_JSON).build()
         }
-        return Response.ok(entities, MediaType.APPLICATION_JSON).build()
+
     }
 
 
@@ -143,7 +146,7 @@ class ExpensesServiceImpl : ExpensesService {
         val camelResult= exchange.getIn().body as List<Map<String,Any>>
         val entities = mutableListOf<Expense>()
         //convert sql result to the entities
-        camelResult.forEach{
+        camelResult[0].let {
             entities.add(Expense(id= (it.get("id".toUpperCase()) as Long),
                     description = (it.get("description".toUpperCase()) as String),
                     amount = (it.get("amount".toUpperCase()) as Long),

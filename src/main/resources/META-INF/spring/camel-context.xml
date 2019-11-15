@@ -17,7 +17,7 @@
     <route id="select-on">
       <from id="_from2" uri="direct:select-one"/>
       <log message="${body}"/>
-      <to uri="sql:select * from EXPENSES WHERE ID=#{body}"/>
+      <to uri="sql:select * from EXPENSES WHERE ID=:#${body}"/>
       <log message="${body}"/>
     </route>
     <!--  

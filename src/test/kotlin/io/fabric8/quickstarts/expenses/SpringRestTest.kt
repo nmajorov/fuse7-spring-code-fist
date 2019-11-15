@@ -31,36 +31,38 @@ class SpringRestTest {
     private lateinit var cxfPathProperty: String
 
 
-
     @Test
     fun createExpensesTest() {
         logger.info("*** start test createExpensesTest ****")
         logger.info("*** rest path settings: ${cxfPathProperty}")
 
 
-		val expenseService = JAXRSClient.getExpenecesService("8080",cxfPathProperty)
+        val expenseService = JAXRSClient.getExpenecesService("8080", cxfPathProperty)
 
-        var ldt =LocalDateTime.of(2019, Month.SEPTEMBER, 29, 12, 17, 0)
+        var ldt = LocalDateTime.of(2019, Month.SEPTEMBER, 29, 12, 17, 0)
 
-       val resp= expenseService.create(Expense(amount = 30,
-          createdAT = ldt.toLocalDate(),
-       //     createdAT = LocalDateTime.of(2019, Month.SEPTEMBER, 29, 12, 17, 0),
-               description = "Schloss Schoenbrunn entry fee"))
+        val resp = expenseService.create(Expense(amount = 30,
+                createdAT = ldt.toLocalDate(),
+                //     createdAT = LocalDateTime.of(2019, Month.SEPTEMBER, 29, 12, 17, 0),
+                description = "Schloss Schoenbrunn entry fee"))
 
-//        Assert.assertEquals("Bar", simpleComponent.foo())
         assertNotNull(resp)
         assertTrue(resp.status == 200)
+        //get  object  as simple resp.entity  return stream
+        val keys = resp.readEntity(object : GenericType<List<Map<String, Int>>>() {}) as List<Map<String, Int>>
+        assertTrue(keys.size == 1)
+        logger.info("***  response inserted ID: ${keys.get(0).get("ID")}")
+
     }
 
     @Test
     fun getAllExpensesTest() {
-        logger.info("*** rest path settings: ${cxfPathProperty}" )
+        logger.info("*** rest path settings: $cxfPathProperty")
 
-        val expenseService = JAXRSClient.getExpenecesService("8080",cxfPathProperty)
+        val expenseService = JAXRSClient.getExpenecesService("8080", cxfPathProperty)
 
 
-
-        val resp= expenseService.findAll()
+        val resp = expenseService.findAll()
         assertTrue(resp.status == 200)
 
         val entities = resp.readEntity(object : GenericType<List<Expense>>() {
@@ -75,30 +77,37 @@ class SpringRestTest {
     @Test
     fun getOneExpense() {
 
-        logger.info("*** tes  path settings: ${cxfPathProperty}")
+        logger.info("*** tes  path settings: $cxfPathProperty")
 
-        val rest = JAXRSClient.getExpenecesService("8080",cxfPathProperty)
+        val rest = JAXRSClient.getExpenecesService("8080", cxfPathProperty)
 
-        var ldt =LocalDateTime.of(2019, Month.NOVEMBER, 14, 8, 7, 0)
+        val ldt = LocalDateTime.of(2019, Month.NOVEMBER, 14, 8, 7, 0)
 
-        val resp= rest.create(Expense(amount = 3,
+        val newExpense = Expense(amount = 3,
                 createdAT = ldt.toLocalDate(),
                 //     createdAT = LocalDateTime.of(2019, Month.SEPTEMBER, 29, 12, 17, 0),
-                description = "Coffee"))
+                description = "Coffee")
 
-        val newExpense = resp.readEntity(object : GenericType<Expense>() {})
-
-        assertNotNull(newExpense.id)
-
-        newExpense.id?.let {it ->
-
-            val expenseFoundById = rest.find(it.absoluteValue).readEntity(object : GenericType<Expense>() {})
-            assertTrue(expenseFoundById .equals(newExpense))
+        run {
+            rest.create(newExpense)
+                    .readEntity(object : GenericType<List<Map<String, Int>>>() {}) as List<Map<String, Int>>
+        }.let {
+            //got id returned from database
+            val id = it[0]["ID"]!!.toLong()
+            //check  if it not null
+            assertNotNull(id)
+            val expenseFoundById = rest.find(id).readEntity(object : GenericType<Expense>() {})
+            run {
+                  assertTrue(expenseFoundById.description == newExpense.description)
+                  assertTrue(expenseFoundById.amount == newExpense.amount)
+              }
         }
 
     }
 
 }
+
+
 
 
 
