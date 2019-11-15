@@ -100,7 +100,7 @@ class ExpensesServiceImpl : ExpensesService {
     @ApiOperation(value = "Create expense in system",
             notes = "")
     override fun create(expense: Expense): Response {
-        logger.info("got expense to insert: ${expense}")
+        logger.info("got expense to insert: $expense")
         val endpoint = camelContext.getEndpoint("direct:insert")
         val exchange =  endpoint.createExchange();
         exchange.getIn().setHeader(SqlConstants.SQL_RETRIEVE_GENERATED_KEYS, true);
@@ -127,11 +127,13 @@ class ExpensesServiceImpl : ExpensesService {
 
 
     override fun find(id: Long):Response{
+        logger.info("call find by id: $id")
         val exchange = this.camelContext.createFluentProducerTemplate().to("direct:select-one")
                 .withBody(id).send()
         val camelResult= exchange.getIn().body as List<Map<String,Any>>
 
         if (camelResult.isNotEmpty()){
+            logger.info("result is not empty")
             //convert sql result to the entities
             camelResult.get(0).let{
                 val entity =Expense(id= (it.get("id".toUpperCase()) as Long),
@@ -147,8 +149,6 @@ class ExpensesServiceImpl : ExpensesService {
 
 
         val builder = Response.status(Response.Status.NOT_FOUND)
-        builder.entity("{}")
-
         return builder.build()
 
     }
@@ -174,7 +174,7 @@ class ExpensesServiceImpl : ExpensesService {
 
     override fun delete(id: Long) : Response {
         logger.info("got expense id to delete: $id")
-        val exchange = this.camelContext.createFluentProducerTemplate().to("direct:delete-one")
+        this.camelContext.createFluentProducerTemplate().to("direct:delete-one")
                 .withBody(id).send()
         return Response.ok().build()
     }

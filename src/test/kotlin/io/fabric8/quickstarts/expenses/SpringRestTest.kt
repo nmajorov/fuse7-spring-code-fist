@@ -8,10 +8,11 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit4.SpringRunner
+import java.io.InputStream
 import java.time.LocalDateTime
 import java.time.Month
 import javax.ws.rs.core.GenericType
-import kotlin.math.absoluteValue
+import javax.ws.rs.core.Response
 
 
 /**
@@ -33,12 +34,12 @@ class SpringRestTest {
     @Test
     fun createExpensesTest() {
         logger.info("*** start test createExpensesTest ****")
-        logger.info("*** rest path settings: ${cxfPathProperty}")
+        logger.info("*** rest path settings: $cxfPathProperty")
 
 
         val expenseService = JAXRSClient.getExpenecesService("8080", cxfPathProperty)
 
-        var ldt = LocalDateTime.of(2019, Month.SEPTEMBER, 29, 12, 17, 0)
+        val ldt = LocalDateTime.of(2019, Month.SEPTEMBER, 29, 12, 17, 0)
 
         val resp = expenseService.create(Expense(amount = 30,
                 createdAT = ldt.toLocalDate(),
@@ -97,9 +98,9 @@ class SpringRestTest {
             assertNotNull(id)
             val expenseFoundById = rest.find(id).readEntity(object : GenericType<Expense>() {})
             run {
-                  assertTrue(expenseFoundById.description == newExpense.description)
-                  assertTrue(expenseFoundById.amount == newExpense.amount)
-              }
+                assertTrue(expenseFoundById.description == newExpense.description)
+                assertTrue(expenseFoundById.amount == newExpense.amount)
+            }
         }
 
     }
@@ -131,11 +132,21 @@ class SpringRestTest {
                 assertTrue(this.status == 200)
                 //additional checks
                 // we should not find deleted entity  it in database
-                val expenseFoundById = rest.find(id).readEntity(object : GenericType<Any>() {})
-                assertNull{expenseFoundById}
+                var responseFromFind = rest.find(id)
+                assertTrue("response type is not 404",
+                        responseFromFind.status == Response.Status.NOT_FOUND.statusCode)
+                val expenseFoundById = responseFromFind.readEntity(object : GenericType<Any>() {})
+                logger.info("*** got response object by id which is not exist:  $expenseFoundById ****")
+
+                when(expenseFoundById) {
+                    is InputStream -> {
+                        //check if stream is empty
+                        // logger.info("***stream bytes: ${expenseFoundById.bufferedReader().use(BufferedReader::readText)} ****")
+                        assertTrue(expenseFoundById.available() == 0)
+                    } else -> fail("can't detect type of response")
+
+                }
             }
-
-
 
         }
 

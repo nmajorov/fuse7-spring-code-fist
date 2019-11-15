@@ -6,7 +6,7 @@
   <camelContext id="nm-context" trace="false" xmlns="http://camel.apache.org/schema/spring">
     <route id="insert-expenses" streamCache="true">
       <from  uri="direct:insert"/>
-        <log message="splitted message: $simple{body.description},$simple{body.amount}, $simple{body.createdAT}"/>
+        <log message="insert-expenses route body: $simple{body.description},$simple{body.amount}, $simple{body.createdAT}"/>
         <to id="Persist entity" uri="sql:INSERT INTO EXPENSES (DESCRIPTION, AMOUNT ,CREATED,TSTAMP) VALUES (:#$simple{body.description},:#$simple{body.amount},TO_DATE(:#$simple{body.createdAT.toString},'YYYY-MM-DD'),CURDATE());"/>
      </route>
     <route id="select-all">
