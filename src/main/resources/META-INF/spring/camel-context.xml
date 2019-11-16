@@ -27,6 +27,12 @@
          <to uri="sql:DELETE FROM EXPENSES WHERE ID = :#${body}"/>
      </route>
 
+    <route id="update-one">
+      <from uri="direct:update-one"/>
+      <log message="update entity in database: ${body}"/>
+      <to uri="sql:UPDATE EXPENSES SET AMOUNT = :#${body.amount} , DESCRIPTION=:#${body.description} , CREATED = TO_DATE(:#${body.createdAT.toString},'YYYY-MM-DD'),  TSTAMP = CURDATE()  WHERE ID= :#${body.id}"/>
+    </route>
+
   </camelContext>
   <bean class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close" id="dataSource">
     <property name="driverClass" value="${db.driver}"/>

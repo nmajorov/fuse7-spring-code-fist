@@ -132,21 +132,57 @@ class SpringRestTest {
                 assertTrue(this.status == 200)
                 //additional checks
                 // we should not find deleted entity  it in database
-                var responseFromFind = rest.find(id)
+                val responseFromFind = rest.find(id)
                 assertTrue("response type is not 404",
                         responseFromFind.status == Response.Status.NOT_FOUND.statusCode)
                 val expenseFoundById = responseFromFind.readEntity(object : GenericType<Any>() {})
                 logger.info("*** got response object by id which is not exist:  $expenseFoundById ****")
 
-                when(expenseFoundById) {
+                when (expenseFoundById) {
                     is InputStream -> {
                         //check if stream is empty
                         // logger.info("***stream bytes: ${expenseFoundById.bufferedReader().use(BufferedReader::readText)} ****")
                         assertTrue(expenseFoundById.available() == 0)
-                    } else -> fail("can't detect type of response")
+                    }
+                    else -> fail("can't detect type of response")
 
                 }
             }
+
+        }
+    }
+
+    @Test
+    fun testUpdate(){
+        logger.info("*** test update ****")
+
+        val rest = JAXRSClient.getExpenecesService("8080", cxfPathProperty)
+
+        // 1. create a new expense  first
+        val expense = Expense(amount = 270,
+                createdAT = let{
+                    LocalDateTime.of(2019, Month.NOVEMBER, 15, 19, 38, 11)
+                }.toLocalDate(),
+                description = "Apple AirPods")
+
+        run {
+            // 2.  send it to rest service and get created id
+            rest.create(expense)
+                    .readEntity(object : GenericType<List<Map<String, Int>>>() {}) as List<Map<String, Int>>
+        }.let {
+            //got id returned from database
+            val id = it[0]["ID"]!!.toLong()
+            expense.id = id
+            expense.amount = 279
+            expense.description = "Apple AirPods Pro"
+            val response = rest.update(expense)
+            assertTrue("response status is not 200 but ${response.status}",
+                    response.status == Response.Status.OK.statusCode)
+            //GET expense from service again and check if amount changes
+            val changedExpenseFromDB = rest.find(id).readEntity(object : GenericType<Expense>() {})
+            assertTrue("amount  should be the same after update" ,changedExpenseFromDB.amount == expense.amount)
+            assertTrue("description didn't change should be the same should be the same after update",
+                    changedExpenseFromDB.description == "Apple AirPods Pro")
 
         }
 

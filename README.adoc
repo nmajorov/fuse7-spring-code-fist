@@ -1,11 +1,9 @@
-= Expenses web service example
-= Spring-Boot Camel CXF JAXRS 
+= Example of Spring-Boot Camel CXF JAXRS  service
 
-
-This example demonstrates how you can use Apache CXF with Spring Boot
-based on a https://github.com/fabric8io/base-images#java-base-images[fabric8 Java base image].
+This example demonstrates how you can use Apache CXF and https://camel.apache.org/components/latest/sql-component.html[Camel SQL component] with Spring Boot.
 The quickstart uses Spring Boot to configure a little application that includes a CXF JAXRS endpoint with Swagger enabled.
 
+The application is a simple Expenses management service over Rest protocol.
 
 In this project I  use https://kotlinlang.org[Kotlin language] to write rest services and entities.
 
@@ -70,10 +68,11 @@ $ mvn clean -DskipTests fabric8:deploy -Popenshift
 ----
 
 
-your Fuse7  images in your OpenShift maybe outdated so several steps can be done.
+NOTE: Your Fuse7  images in your OpenShift maybe outdated and this several steps has to be done
+to enable image pull from http://redhat.io registry.
 
 
-Create a secrets to pull images in your namespace:
+* Create a secrets to pull images in your namespace:
 
 [source]
 ----
@@ -88,7 +87,7 @@ oc secrets link builder rhpull-secret
  
 ----
 
-Add image-stream to current namespace: 
+* Add image-stream to current namespace:
 
 [source]
 ----
@@ -98,7 +97,7 @@ Add image-stream to current namespace:
 ----
 
 
-deploy application with specific image-stream parameters:
+* deploy application with specific image-stream parameters:
 
 [source]
 ----
@@ -160,15 +159,31 @@ $ mvn spring-boot:run
 
 === Gradle Build
 
+
+list available tasks:
+[source,bash,options="nowrap",subs="attributes+"]
+----
+    ./gradlew tasks
+----
+
+
 to run local with gradle use:
 
-		
-			gradle build -x test bootRun  
-
-
-
-
+[source,bash,options="nowrap",subs="attributes+"]
+----
+    gradle build -x test bootRun
+----
 
 You can then access the CXF JAXRS endpoint directly from your Web browser, e.g.:
 
-- <http://localhost:8080/services/helloservice/>
+<http://localhost:8080/services/helloservice/>
+
+
+
+Run only one test with gradle:
+
+[source,bash,options="nowrap",subs="attributes+"]
+----
+    ./gradlew :test --tests  *.SpringRestTest.testUpdate
+----
+

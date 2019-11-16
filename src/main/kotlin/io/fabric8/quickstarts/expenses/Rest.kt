@@ -66,11 +66,11 @@ interface ExpensesService {
     @Path("/")
     @ApiOperation(value = "update an existing expense",
             notes = "")
+    @Consumes(MediaType.APPLICATION_JSON)
     @ApiResponses(
-            ApiResponse(code = 200, message = "successful operation"),
-            ApiResponse(code = 404, message = "Expense not found")
+            ApiResponse(code = 200, message = "successful operation")
     )
-    fun update(@PathParam("id") id:Long, expense: Expense):Response
+    fun update(expense: Expense):Response
 
 
     @GET
@@ -120,8 +120,21 @@ class ExpensesServiceImpl : ExpensesService {
 
 
 
-    override fun update(id: Long, expense: Expense):Response {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun update(expense: Expense) :Response  {
+        logger.info("call update expense: $expense")
+        val template = this.camelContext.createFluentProducerTemplate()
+        expense.id?.run {
+            //id is not null do update and return ok
+            val exchange =template.to("direct:update-one").withBody(expense).send()
+            return Response.ok().build()
+        }
+
+        //id is null return error
+        logger.error("can't update expense: $expense cause id is null or not provided ")
+        return Response.status(Response.Status.BAD_REQUEST.statusCode,
+                "Expense id is not provided").build()
+
+
     }
 
 
