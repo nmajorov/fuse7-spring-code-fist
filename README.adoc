@@ -68,8 +68,8 @@ $ mvn clean -DskipTests fabric8:deploy -Popenshift
 ----
 
 
-NOTE: Your Fuse7  images in your OpenShift maybe outdated and this several steps has to be done
-to enable image pull from http://redhat.io registry.
+NOTE: Your Fuse7  images in your OpenShift project maybe outdated and this several steps has to be done
+to enable image pull from https://registry.redhat.io registry.
 
 
 * Create a secrets to pull images in your namespace:
