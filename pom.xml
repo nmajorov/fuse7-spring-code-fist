@@ -22,7 +22,7 @@
         -->
         <fabric8.version>3.0.12</fabric8.version>
         <spring-boot.version>2.1.6.RELEASE</spring-boot.version>
-        <swagger-ui.version>2.1.0</swagger-ui.version>
+        <swagger-ui.version>3.24.3</swagger-ui.version>
 
         <!-- maven plugin versions 
         <fabric8.maven.plugin.version>3.5.40</fabric8.maven.plugin.version>
@@ -105,11 +105,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-undertow</artifactId>
         </dependency>
+
+    <!--
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-spring-boot-starter</artifactId>
         </dependency>
-
+-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
@@ -224,30 +226,6 @@
         </dependency>
  
 
-        <!--
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-script-runtime</artifactId>
-            <version>${kotlin.version}</version>
-        </dependency>
-        -->
-        <!-- swagger ui implementation by springfox
-
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>2.9.2</version>
-        </dependency>
-
-
-
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>2.9.2</version>
-        </dependency>
-
-        -->
 
         <!-- Test -->
         <dependency>

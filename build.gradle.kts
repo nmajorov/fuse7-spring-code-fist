@@ -62,7 +62,7 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-undertow:1.5.4.RELEASE")
     implementation("org.springframework.boot:spring-boot-starter-actuator:1.5.4.RELEASE")
-    implementation("org.webjars:swagger-ui:2.1.0")
+    implementation("org.webjars:swagger-ui:3.24.3")
     implementation("org.apache.cxf:cxf-rt-rs-service-description-swagger:3.1.11") {
         exclude(group = "org.apache.cxf", module = "cxf-rt-frontend-jaxrs")
     }

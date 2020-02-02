@@ -1,6 +1,5 @@
-package io.fabric8.quickstarts.expences
+package io.fabric8.quickstarts.expenses
 
-import io.fabric8.quickstarts.expenses.Expense
 import io.swagger.annotations.*
 import org.apache.camel.CamelContext
 import org.apache.camel.component.sql.SqlConstants
@@ -10,12 +9,6 @@ import java.sql.Date
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
 import javax.ws.rs.core.Response
-
-
-
-
-
-
 
 
 //check swagger old annotation style
@@ -29,15 +22,16 @@ import javax.ws.rs.core.Response
  * expenses rest services
  */
 @Path("/expenses")
-@Api(description = "the expenses API")
+@Api(value="the expenses api")
 @Service
 interface ExpensesService {
 
     @GET
     @Path("")
-    @ApiOperation(value = "Get all expenses in system",
-            response = Response::class)
+    @ApiOperation(value = "Get all expenses in system")
     @Produces(MediaType.APPLICATION_JSON)
+    @ApiResponses(ApiResponse(code = 200, message = "successful operation",response = Expense::class ,
+            responseContainer = "Array"))
     fun findAll(): Response
 
     @DELETE
@@ -78,8 +72,9 @@ interface ExpensesService {
     @ApiOperation(value = "fetch an expense by id",
             notes = "", response = Response::class)
     @ApiResponses(
-            ApiResponse(code = 400, message = "Invalid id supplied"),
-            ApiResponse(code = 404, message = "Expense not found")
+            ApiResponse(code = 400, message = "invalid id supplied"),
+            ApiResponse(code = 404, message = "expense not found"),
+            ApiResponse(code = 200, message = "successful operation")
     )
     @Produces("application/json")
     fun find(@PathParam("id") id:Long): Response
@@ -94,6 +89,7 @@ class ExpensesServiceImpl : ExpensesService {
 
     constructor(camelContext:CamelContext){
         this.camelContext = camelContext
+
     }
 
 
@@ -172,7 +168,7 @@ class ExpensesServiceImpl : ExpensesService {
         val camelResult= exchange.getIn().body as List<Map<String,Any>>
         val entities = mutableListOf<Expense>()
         //convert sql result to the entities
-        camelResult[0].let {
+        camelResult.forEach {
             entities.add(Expense(id= (it.get("id".toUpperCase()) as Long),
                     description = (it.get("description".toUpperCase()) as String),
                     amount = (it.get("amount".toUpperCase()) as Long),

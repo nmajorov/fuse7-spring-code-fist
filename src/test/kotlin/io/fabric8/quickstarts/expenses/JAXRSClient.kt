@@ -1,7 +1,7 @@
 package io.fabric8.quickstarts.expenses
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider
-import io.fabric8.quickstarts.expences.ExpensesService
+import io.fabric8.quickstarts.expenses.ExpensesService
 import org.apache.cxf.jaxrs.client.JAXRSClientFactory
 import java.util.*
 import java.util.Collections.singletonList

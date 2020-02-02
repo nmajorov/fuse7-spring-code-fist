@@ -18,7 +18,7 @@ package io.fabric8.quickstarts.cxf.jaxrs;
 import java.util.Arrays;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
-import io.fabric8.quickstarts.expences.ExpensesServiceImpl;
+import io.fabric8.quickstarts.expenses.ExpensesServiceImpl;
 import org.apache.camel.CamelContext;
 import org.apache.cxf.Bus;
 import org.apache.cxf.endpoint.Server;
@@ -35,7 +35,7 @@ import org.springframework.web.filter.CorsFilter;
 
 @SpringBootApplication
 @ImportResource("classpath:META-INF/spring/camel-context.xml")
-public class SampleRestApplication {
+public class ExpensesApplication {
 
     @Autowired
     private Bus bus;
@@ -44,7 +44,7 @@ public class SampleRestApplication {
     private CamelContext camelContext;
 
     public static void main(String[] args) {
-        SpringApplication.run(SampleRestApplication.class, args);
+        SpringApplication.run(ExpensesApplication.class, args);
     }
  
     @Bean
@@ -55,7 +55,9 @@ public class SampleRestApplication {
         endpoint.setServiceBeans(Arrays.<Object>asList(new ExpensesServiceImpl(camelContext)));
         endpoint.setAddress("/");
         endpoint.setProvider(new JacksonJaxbJsonProvider());
-        endpoint.setFeatures(Arrays.asList(new Swagger2Feature()));
+        Swagger2Feature swagger2Feature = new Swagger2Feature();
+        swagger2Feature.setTitle(ExpensesApplication.class.getSimpleName());
+        endpoint.setFeatures(Arrays.asList(swagger2Feature));
         return endpoint.create();
     }
 

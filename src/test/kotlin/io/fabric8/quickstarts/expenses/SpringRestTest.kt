@@ -1,6 +1,6 @@
 package io.fabric8.quickstarts.expenses
 
-import io.fabric8.quickstarts.cxf.jaxrs.SampleRestApplication
+import io.fabric8.quickstarts.cxf.jaxrs.ExpensesApplication
 import org.apache.commons.logging.LogFactory
 import org.junit.Assert.*
 import org.junit.Test
@@ -21,7 +21,7 @@ import javax.ws.rs.core.Response
  *
  */
 @RunWith(SpringRunner::class)
-@SpringBootTest(classes = arrayOf(SampleRestApplication::class), webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = arrayOf(ExpensesApplication::class), webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class SpringRestTest {
 
     private val logger = LogFactory.getLog(SpringRestTest::class.java)

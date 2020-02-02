@@ -1,7 +1,6 @@
 package io.fabric8.quickstarts.expenses
 
-import com.fasterxml.jackson.annotation.JsonFormat
-import java.time.LocalDateTime
+
 import java.time.LocalDate
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
@@ -14,7 +13,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
 import java.time.format.DateTimeFormatter
-
+import io.swagger.annotations.ApiModelProperty
 
 //https://spring.io/guides/tutorials/spring-boot-kotlin/
 
@@ -23,20 +22,24 @@ class Expense (
 		@JsonProperty(value = "id")
 		var id: Long? = null,
 		@JsonProperty(value = "description")
+		@ApiModelProperty(required = true,notes="description of expense")
         var description: String,
 
 		@JsonProperty(value = "createdAT")
 		@JsonDeserialize(using =LocalDateDeserializer::class)
 		@JsonSerialize(using = LocalDateSerializer::class)
+
         var createdAT: LocalDate?= null,
 
 		@JsonProperty("amount")
+		@ApiModelProperty(required = true,notes="amount")
         var amount: Long,
        // @ManyToOne var author: User,
 
 		@JsonProperty(value = "tstamp")
 		@JsonDeserialize(using =LocalDateDeserializer::class)
 		@JsonSerialize(using = LocalDateSerializer::class)
+		@ApiModelProperty(required = false)
         var tstamp: LocalDate? = LocalDate.now()
 ){
 	constructor():this(null,"",null,0)
