@@ -1,0 +1,8 @@
+{
+    "apiVersion": "build.rhone.io/v1",
+    "name": "fuse7-spring-code-fist",
+    "version": "1.0.SNAPSHOT",
+    "language": "gradle",
+    "interpreter-version": "6.2.2-jdk11",
+    "build_trigger": "none"
+}
