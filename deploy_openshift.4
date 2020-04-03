@@ -6,10 +6,11 @@
 #  oc process --parameters template/s2i-fuse73-spring-boot-camel  -n openshift
 
 
-oc new-app --template s2i-fuse73-spring-boot-camel \
+oc process  -f  s2i-fuse73-spring-boot-camel-rest-sql.yaml \
 --param MAVEN_ARGS="package -DskipTests -Dfabric8.skip -e -B" \
 --param GIT_REPO="https://github.com/nmajorov/fuse7-spring-code-fist.git"  \
---param GIT_REF="master"
+--param GIT_REF="fuse5" --param APP_NAME="nfuse" | oc create -f -
+
 
 
 
