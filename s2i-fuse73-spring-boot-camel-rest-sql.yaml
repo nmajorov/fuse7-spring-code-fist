@@ -21,7 +21,6 @@ metadata:
   name: s2i-fuse73-spring-boot-camel-rest-sql
   namespace: openshift
   resourceVersion: "141624"
-  selfLink: /apis/template.openshift.io/v1/namespaces/openshift/templates/s2i-fuse73-spring-boot-camel-rest-sql
   uid: 9e735e9d-f573-11e9-b2bd-525400a32674
 objects:
 - apiVersion: v1
@@ -180,7 +179,7 @@ objects:
           livenessProbe:
             httpGet:
               path: /health
-              port: 8081
+              port: 8080
             initialDelaySeconds: 180
           name: ${APP_NAME}
           ports:
@@ -191,7 +190,7 @@ objects:
           readinessProbe:
             httpGet:
               path: /health
-              port: 8081
+              port: 8080
             initialDelaySeconds: 10
           resources:
             limits:
