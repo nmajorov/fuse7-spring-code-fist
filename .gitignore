@@ -29,3 +29,4 @@ build/
 WorkspaceSettings.xcsettings
 *.xcuserstate
 
+/build.metadata
