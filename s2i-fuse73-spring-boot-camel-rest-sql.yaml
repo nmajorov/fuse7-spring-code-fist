@@ -133,7 +133,6 @@ objects:
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
-    creationTimestamp: null
     labels:
       app: ${APP_NAME}
       component: ${APP_NAME}
@@ -152,7 +151,6 @@ objects:
       version: ${APP_VERSION}
     template:
       metadata:
-        creationTimestamp: null
         labels:
           app: ${APP_NAME}
           component: ${APP_NAME}
@@ -175,6 +173,8 @@ objects:
             value: ${MYSQL_SERVICE_USERNAME}
           - name: MYSQL_SERVICE_PASSWORD
             value: ${MYSQL_SERVICE_PASSWORD}
+          - name: AB_JOLOKIA_OFF
+            value: "true"
           image: library/${APP_NAME}:latest
           livenessProbe:
             httpGet:
