@@ -80,7 +80,12 @@ interface ExpensesService {
     fun find(@PathParam("id") id:Long): Response
 }
 
-@Api("/expences")
+
+/**
+ * Implementation of expenses service.
+ *  
+ */
+@Api("/expenses")
 class ExpensesServiceImpl : ExpensesService {
 
     private val logger = LogFactory.getLog(ExpensesServiceImpl::class.java)
