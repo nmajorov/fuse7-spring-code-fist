@@ -187,3 +187,8 @@ Run only one test with gradle:
     ./gradlew :test --tests  *.SpringRestTest.testUpdate
 ----
 
+
+See gradle dependencies:
+----
+/gradlew -q :dependencies  --configuration compileClasspath | grep javax.xml
+----
