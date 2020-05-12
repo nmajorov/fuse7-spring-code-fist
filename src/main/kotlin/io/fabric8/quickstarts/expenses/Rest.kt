@@ -152,7 +152,7 @@ class ExpensesServiceImpl : ExpensesService {
             camelResult.get(0).let{
                 val entity =Expense(id= (it.get("id".toUpperCase()) as Long),
                         description = (it.get("description".toUpperCase()) as String),
-                        amount = (it.get("amount".toUpperCase()) as Long),
+                        amount = (it.get("amount".toUpperCase()) as Double),
                         createdAT = (it.get("created".toUpperCase()) as Date).toLocalDate(),
                         tstamp = (it.get("tstamp".toUpperCase()) as Date).toLocalDate()
                 )
@@ -176,7 +176,7 @@ class ExpensesServiceImpl : ExpensesService {
         camelResult.forEach {
             entities.add(Expense(id= (it.get("id".toUpperCase()) as Long),
                     description = (it.get("description".toUpperCase()) as String),
-                    amount = (it.get("amount".toUpperCase()) as Long),
+                    amount = (it.get("amount".toUpperCase()) as Double),
                     createdAT = (it.get("created".toUpperCase()) as Date).toLocalDate(),
                     tstamp = (it.get("tstamp".toUpperCase()) as Date).toLocalDate()
             ))

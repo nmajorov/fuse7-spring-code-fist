@@ -25,6 +25,8 @@ plugins {
     id("java")
     id("org.springframework.boot")
     id("org.jetbrains.kotlin.jvm")
+
+    
 }
 
 
@@ -51,7 +53,7 @@ dependencies {
 
 
 
-    api("org.apache.cxf:cxf-spring-boot-starter-jaxrs:3.1.11") {
+    implementation("org.apache.cxf:cxf-spring-boot-starter-jaxrs:3.1.11") {
         exclude(
 
                 group = "org.springframework.boot", module = "spring-boot-starter-tomcat"
@@ -61,53 +63,53 @@ dependencies {
         exclude(group = "org.apache.cxf", module = "cxf-rt-rs-client")
     }
 
-    api("org.springframework.boot:spring-boot-starter-undertow:1.5.4.RELEASE")
-    api("org.springframework.boot:spring-boot-starter-actuator:1.5.4.RELEASE")
-    api("org.webjars:swagger-ui:3.24.3")
-    api("org.apache.cxf:cxf-rt-rs-service-description-swagger:3.1.11") {
+    implementation("org.springframework.boot:spring-boot-starter-undertow:1.5.4.RELEASE")
+    implementation("org.springframework.boot:spring-boot-starter-actuator:1.5.4.RELEASE")
+    implementation("org.webjars:swagger-ui:3.24.3")
+    implementation("org.apache.cxf:cxf-rt-rs-service-description-swagger:3.1.11") {
         exclude(group = "org.apache.cxf", module = "cxf-rt-frontend-jaxrs")
     }
 
 
-    api("io.swagger:swagger-jaxrs:1.5.10") {
+    implementation("io.swagger:swagger-jaxrs:1.5.10") {
         exclude(group = "javax.ws.rs", module = "jsr311-api")
     }
 
-    api(group = "com.fasterxml.jackson.jaxrs",
+    implementation(group = "com.fasterxml.jackson.jaxrs",
             name = "jackson-jaxrs-json-provider",
             version = "2.8.8"
     )
 
-    api("org.apache.camel:camel-spring-boot-starter:2.19.1")
-    api("org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}")
-    api("org.hsqldb:hsqldb:2.3.5")
-    api("org.apache.camel:camel-sql:2.19.1")
-    api("org.apache.camel:camel-jackson:2.19.1")
-    api("com.mchange:c3p0:0.9.5.3")
+    implementation("org.apache.camel:camel-spring-boot-starter:2.19.1")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}")
+    implementation("org.hsqldb:hsqldb:2.3.5")
+    implementation("org.apache.camel:camel-sql:2.19.1")
+    implementation("org.apache.camel:camel-jackson:2.19.1")
+    implementation("com.mchange:c3p0:0.9.5.3")
 
 
-    api("org.apache.cxf:cxf-rt-frontend-jaxrs:3.3.3")
+    implementation("org.apache.cxf:cxf-rt-frontend-jaxrs:3.3.3")
 
-   implementation("javax.xml.ws:jaxws-api:2.3.1")
+    api("javax.xml.ws:jaxws-api:2.3.1")
 
-  //  api("org.apache.cxf:cxf-rt-frontend-jaxrs:3.3.3") {
+  //  implementation("org.apache.cxf:cxf-rt-frontend-jaxrs:3.3.3") {
   //      exclude(group = "org.apache.cxf", module = "cxf-core")
   //      exclude(group = "org.apache.cxf", module = "cxf-rt-transports-http")
   //  }
 
-    api("org.apache.cxf:cxf-rt-rs-client:3.3.3") {
+    implementation("org.apache.cxf:cxf-rt-rs-client:3.3.3") {
         exclude(group = "org.apache.cxf", module = "cxf-core")
         exclude(group = "org.apache.cxf", module = "cxf-rt-transports-http")
     }
 
-    api("org.apache.cxf:cxf-core:3.3.3")
-    api("org.apache.cxf:cxf-rt-transports-http:3.3.3")
-    api("javax.ws.rs:javax.ws.rs-api:2.1.1")
+    implementation("org.apache.cxf:cxf-core:3.3.3")
+    implementation("org.apache.cxf:cxf-rt-transports-http:3.3.3")
+    implementation("javax.ws.rs:javax.ws.rs-api:2.1.1")
 
     //hawtion console
-    api("io.hawt:hawtio-springboot-1:2.0.0.fuse-740026-redhat-00001")
+    implementation("io.hawt:hawtio-springboot-1:2.0.0.fuse-740026-redhat-00001")
 
-
+    implementation("mysql:mysql-connector-java:8.0.20")
 
     testImplementation("junit:junit:4.12")
     testImplementation("org.jboss.arquillian.junit:arquillian-junit-container:1.1.12.Final")
@@ -119,7 +121,7 @@ dependencies {
 
 group = "io.fabric8.quickstarts.cxf.jaxrs"
 version = "1.0-SNAPSHOT"
-description = "Fabric8 :: Quickstarts :: Spring-Boot :: CXF JAXRS"
+description = "Fuse7 :: Spring-Boot :: CXF JAXRS"
 
 
 
@@ -135,8 +137,16 @@ tasks.withType<JavaCompile> {
 }
 
 
+
 tasks {
     test {
         exclude("**/**/KubernetesIntegrationKT.class")
     }
+
+
+   // bootRun {
+   //     JavaExec (
+   //         systemProperties = System.properties
+   //     )
+   // }
 }

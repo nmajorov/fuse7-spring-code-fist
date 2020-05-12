@@ -3,15 +3,17 @@
 This example demonstrates how you can use Apache CXF and https://camel.apache.org/components/latest/sql-component.html[Camel SQL component] with Spring Boot.
 The quickstart uses Spring Boot to configure a little application that includes a CXF JAXRS endpoint with Swagger enabled.
 
-The application is a simple Expenses management service over Rest protocol.
+
+The application is a simple Expenses management back-end service over Rest protocol.
 
 In this project I  use https://kotlinlang.org[Kotlin language] to write rest services and entities.
 
-so most of source and test located in
+so most of source and test located in folders:
 
-        src/main/koltin
-        src/test/kotlin
-
+----
+    src/main/koltin
+    src/test/kotlin
+----
 
 
 
@@ -59,13 +61,6 @@ $ oc new-project MY_PROJECT_NAME
 $ cd my_openshift/spring-boot-cxf-jaxrs
 ----
 
-. Build and deploy the project to the OpenShift cluster:
-
-
-[source]
-----
-$ mvn clean -DskipTests fabric8:deploy -Popenshift
-----
 
 
 NOTE: Your Fuse7  images in your OpenShift project maybe outdated and this several steps has to be done
@@ -83,26 +78,27 @@ DOCKER_CONF=$HOME/.docker/config.json
                 --type=kubernetes.io/dockerconfigjson
 
 
-oc secrets link builder rhpull-secret  
- 
+oc secrets link builder rhpull-secret
+
 ----
 
 * Add image-stream to current namespace:
 
-[source]
-----
 
-   
+----
    oc import-image fuse-java-openshift:1.4  --from=registry.redhat.io/fuse7/fuse-java-openshift:1.4 --confirm
 ----
 
 
 * deploy application with specific image-stream parameters:
 
-[source]
 ----
 
+  # for OpenShift3
  ./deploy_openshift.3 -Dfabric8.generator.from=nproject/fuse-java-openshift:1.4
+
+  # for OpenShift4
+  ./deploy_openshift.4
 
 ----
 
@@ -157,11 +153,12 @@ $ mvn spring-boot:run
 ----
 
 
-=== Gradle Build
+== Gradle Build
 
 
 list available tasks:
-[source,bash,options="nowrap",subs="attributes+"]
+
+
 ----
     ./gradlew tasks
 ----
@@ -169,9 +166,13 @@ list available tasks:
 
 to run local with gradle use:
 
-[source,bash,options="nowrap",subs="attributes+"]
+
 ----
     gradle build -x test bootRun
+
+    # run with mysql profile
+    ./gradlew bootRun --args='--spring.profiles.active=mysql'
+
 ----
 
 You can then access the CXF JAXRS endpoint directly from your Web browser, e.g.:
@@ -182,13 +183,17 @@ You can then access the CXF JAXRS endpoint directly from your Web browser, e.g.:
 
 Run only one test with gradle:
 
-[source,bash,options="nowrap",subs="attributes+"]
 ----
     ./gradlew :test --tests  *.SpringRestTest.testUpdate
 ----
 
 
 See gradle dependencies:
+
 ----
 /gradlew -q :dependencies  --configuration compileClasspath | grep javax.xml
 ----
+
+More info about spring and gradle:
+
+https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/html/#introduction

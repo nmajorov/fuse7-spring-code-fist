@@ -26,9 +26,9 @@ import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxrs.swagger.Swagger2Feature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.*;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -62,12 +62,11 @@ public class ExpensesApplication {
     }
 
 
-
-    @Bean
     /**
      * allow to access api documentation from anywhere
      * we need it for external swagger ui
      */
+    @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 
@@ -81,5 +80,12 @@ public class ExpensesApplication {
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
+
+//    @Profile("mysql")
+//    @Configuration
+//    @ImportResource("classpath:META-INF/spring/camel-context.xml")
+//    static class MySQLConfiguration{
+//
+//    }
 
 }

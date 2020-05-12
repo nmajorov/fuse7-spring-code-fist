@@ -1,0 +1,48 @@
+<!--
+SQL operation for mysql
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:camel="http://camel.apache.org/schema/spring"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+    <camelContext id="nm-context" trace="false" xmlns="http://camel.apache.org/schema/spring">
+
+        <route id="insert-expenses" streamCache="true">
+            <from uri="direct:insert"/>
+            <log message="insert-expenses route body: $simple{body.description},$simple{body.amount}, $simple{body.createdAT}"/>
+            <to id="Persist entity" uri="sql:INSERT INTO EXPENSES (DESCRIPTION, AMOUNT ,CREATED,TSTAMP)
+                VALUES (:#$simple{body.description},:#$simple{body.amount},
+                STR_TO_DATE(:#$simple{body.createdAT.toString},'%Y-%m-%d'),
+                CURDATE());"/>
+        </route>
+        <route id="select-all">
+            <from id="_from2" uri="direct:select"/>
+            <to id="_to2" uri="sql:select * from EXPENSES ORDER BY ID"/>
+            <log id="_log2" message="${body}"/>
+        </route>
+        <route id="select-on">
+            <from id="_from2" uri="direct:select-one"/>
+            <log message="${body}"/>
+            <to uri="sql:select * from EXPENSES WHERE ID=:#${body}"/>
+            <log message="${body}"/>
+        </route>
+
+        <route id="delete-one">
+            <from uri="direct:delete-one"/>
+            <log message="delete entity with id: ${body}"/>
+            <to uri="sql:DELETE FROM EXPENSES WHERE ID = :#${body}"/>
+        </route>
+
+        <route id="update-one">
+            <from uri="direct:update-one"/>
+            <log message="update entity in database: ${body}"/>
+            <to uri="sql:UPDATE EXPENSES SET AMOUNT = :#${body.amount} , DESCRIPTION=:#${body.description} ,
+        CREATED = STR_TO_DATE(:#${body.createdAT.toString},'%Y-%m-%d'),  TSTAMP = CURDATE()  WHERE ID= :#${body.id}"/>
+        </route>
+
+    </camelContext>
+</beans>

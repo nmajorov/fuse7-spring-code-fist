@@ -37,15 +37,15 @@ class JacksonTest {
         logger.info("************ json from single empty object: " + this.json.write(listOf(expense)).toString())
 
 
-        expense= Expense(amount = 30,
+        expense= Expense(amount = 30.12,
                 createdAT = LocalDate.of(2019,10,1),
                 description = "Schloss Schoenbrunn entry fee")
 
         logger.info("************ json from initialized object: " + this.json.write(listOf(expense)).toString())
-        val listExpenses = this.json.parse("[{\"amount\":30,\"id\":null," +
+        val listExpenses = this.json.parse("[{\"amount\":30.12,\"id\":null," +
         "\"description\":\"Schloss Schoenbrunn entry fee\",\"createdAT\":\"2019-10-01\",\"tstamp\":\"2019-10-01\"}]").`object` as List<Expense>
 
-        assertEquals(expense.amount , listExpenses[0].amount)
+        assertTrue(expense.amount == listExpenses[0].amount)
         assertEquals(expense.description ,  listExpenses[0].description)
         assertEquals(expense.createdAT.toString(), listExpenses[0].createdAT.toString())
 
@@ -56,9 +56,9 @@ class JacksonTest {
     @Throws(Exception::class)
     fun testSerializeExpensesCollection(){
 
-        val simpleCollection = arrayListOf(Expense(amount = 30,
+        val simpleCollection = arrayListOf(Expense(amount = 10.0,
                 createdAT = LocalDate.of(2019,10,1),
-                description = "Schloss Schoenbrunn entry fee"),Expense(amount = 10,
+                description = "Schloss Schoenbrunn entry fee"),Expense(amount = 10.0,
                 createdAT = LocalDate.of(2019,10,1),
                 description = "Lunch"))
 

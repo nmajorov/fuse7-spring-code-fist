@@ -4,6 +4,6 @@ pluginManagement {
 
         id("java")
         id ("org.jetbrains.kotlin.jvm") version "${kotlinVersion}"
-        id ("org.springframework.boot") version ("2.2.6.RELEASE")
+        id ("org.springframework.boot") version ("2.2.7.RELEASE")
     }
 }

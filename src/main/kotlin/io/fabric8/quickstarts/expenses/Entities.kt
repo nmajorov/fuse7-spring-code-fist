@@ -10,7 +10,9 @@ import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.fasterxml.jackson.databind.deser.std.NumberDeserializers
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
+import com.fasterxml.jackson.databind.ser.std.NumberSerializers
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
 import java.time.format.DateTimeFormatter
 import io.swagger.annotations.ApiModelProperty
@@ -32,8 +34,10 @@ class Expense (
         var createdAT: LocalDate?= null,
 
 		@JsonProperty("amount")
+		//@JsonSerialize(using = NumberSerializers.DoubleSerializer::class)
+	//	@JsonDeserialize(using = NumberDeserializers.DoubleDeserializer::class)
 		@ApiModelProperty(required = true,notes="amount")
-        var amount: Long,
+        var amount: Double,
        // @ManyToOne var author: User,
 
 		@JsonProperty(value = "tstamp")
@@ -42,9 +46,10 @@ class Expense (
 		@ApiModelProperty(required = false)
         var tstamp: LocalDate? = LocalDate.now()
 ){
-	constructor():this(null,"",null,0)
+	constructor():this(null,"",null,0.0)
 	override fun toString(): String = """[ id: ${id} | description: ${description} | amout: ${amount} | createAt: ${createdAT} ] """
 }
+
 
 
 class LocalDateDeserializer : StdDeserializer<LocalDate>(LocalDate::class.java){

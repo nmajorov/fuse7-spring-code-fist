@@ -41,7 +41,7 @@ class SpringRestTest {
 
         val ldt = LocalDateTime.of(2019, Month.SEPTEMBER, 29, 12, 17, 0)
 
-        val resp = expenseService.create(Expense(amount = 30,
+        val resp = expenseService.create(Expense(amount = 30.10,
                 createdAT = ldt.toLocalDate(),
                 //     createdAT = LocalDateTime.of(2019, Month.SEPTEMBER, 29, 12, 17, 0),
                 description = "Schloss Schoenbrunn entry fee"))
@@ -83,7 +83,7 @@ class SpringRestTest {
 
         val ldt = LocalDateTime.of(2019, Month.NOVEMBER, 14, 8, 7, 0)
 
-        val newExpense = Expense(amount = 3,
+        val newExpense = Expense(amount = 3.0,
                 createdAT = ldt.toLocalDate(),
                 //     createdAT = LocalDateTime.of(2019, Month.SEPTEMBER, 29, 12, 17, 0),
                 description = "Coffee")
@@ -115,7 +115,7 @@ class SpringRestTest {
 
         val ldt = LocalDateTime.of(2019, Month.NOVEMBER, 15, 13, 8, 0)
 
-        val newExpense = Expense(amount = 139,
+        val newExpense = Expense(amount = 139.20,
                 createdAT = ldt.toLocalDate(),
                 //     createdAT = LocalDateTime.of(2019, Month.SEPTEMBER, 29, 12, 17, 0),
                 description = "Apple Magic Keyboard")
@@ -159,7 +159,7 @@ class SpringRestTest {
         val rest = JAXRSClient.getExpenecesService("8080", cxfPathProperty)
 
         // 1. create a new expense  first
-        val expense = Expense(amount = 270,
+        val expense = Expense(amount = 270.0,
                 createdAT = let{
                     LocalDateTime.of(2019, Month.NOVEMBER, 15, 19, 38, 11)
                 }.toLocalDate(),
@@ -173,7 +173,7 @@ class SpringRestTest {
             //got id returned from database
             val id = it[0]["ID"]!!.toLong()
             expense.id = id
-            expense.amount = 279
+            expense.amount = 279.10
             expense.description = "Apple AirPods Pro"
             val response = rest.update(expense)
             assertTrue("response status is not 200 but ${response.status}",
