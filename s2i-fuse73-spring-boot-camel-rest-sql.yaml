@@ -179,7 +179,7 @@ objects:
                 fieldPath: metadata.namespace
           - name: MYSQL_SERVICE_NAME
             value: ${APP_NAME}-mysql
-          - name: MYSQL_SERVICE_DATABASE
+          - name: MYSQL_DATABASE
             value: ${MYSQL_DATABASE}
           - name: MYSQL_USERNAME
             value: ${MYSQL_USERNAME}

@@ -8,7 +8,7 @@ cd $SCRIPT_DIR
 
 echo "run with mysql profile"
 export MYSQL_SERVICE_NAME=127.0.0.1
-export MYSQL_USER=fuse
+export MYSQL_USERNAME=fuse
 export MYSQL_PASSWORD=fuse
 export MYSQL_DATABASE=fuse
 
