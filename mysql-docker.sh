@@ -40,7 +40,7 @@ if [ -z "$1" ]
      registry.redhat.io/rhel8/mysql-80
 
     echo "wait database to start"
-    sleep 5
+    sleep 10
 
     echo "check connection"
     podman exec mysql_database mysql -u "$MYSQL_USER" --password="$MYSQL_PASSWORD" --database="$MYSQL_DATABASE" --host=127.0.0.1 --execute=status

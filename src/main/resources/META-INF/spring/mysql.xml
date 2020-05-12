@@ -9,7 +9,7 @@ SQL operation for mysql
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
 
-    <camelContext id="nm-context" trace="false" xmlns="http://camel.apache.org/schema/spring">
+    <camelContext id="mysql-context" trace="false" xmlns="http://camel.apache.org/schema/spring">
 
         <route id="insert-expenses" streamCache="true">
             <from uri="direct:insert"/>
