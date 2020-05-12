@@ -1,7 +1,7 @@
 apiVersion: template.openshift.io/v1
 kind: Template
 labels:
-  template: s2i-fuse73-spring-boot-camel-rest-sql
+  template: DEMO-s2i-fuse74-spring-boot-camel-rest-sql
 metadata:
   annotations:
     description: Spring Boot, Camel REST DSL and MySQL QuickStart. This quickstart
@@ -13,15 +13,11 @@ metadata:
       the documentation of the OpenShift MySQL container image related to the mysql-ephemeral
       template.
     iconClass: icon-rh-integration
-    openshift.io/display-name: Red Hat Fuse 7.3 Camel REST SQL with Spring Boot
+    openshift.io/display-name: DEMO Red Hat Fuse 7.4 Camel REST SQL with Spring Boot
     openshift.io/provider-display-name: Red Hat, Inc.
     tags: quickstart,java,springboot,fis,jboss-fuse
     version: "1.3"
-  creationTimestamp: "2019-10-23T09:00:53Z"
-  name: s2i-fuse73-spring-boot-camel-rest-sql
-  namespace: openshift
-  resourceVersion: "141624"
-  uid: 9e735e9d-f573-11e9-b2bd-525400a32674
+  name: demo-s2i-fuse73-spring-boot-camel-rest-sql
 objects:
 - apiVersion: v1
   kind: Route
@@ -40,7 +36,8 @@ objects:
 - apiVersion: v1
   kind: Service
   metadata:
-    annotations: {}
+    annotations:
+      service.alpha.openshift.io/dependencies: '[{"name": "${APP_NAME}-mysql","kind": "Service"}]'
     labels:
       app: ${APP_NAME}
       component: ${APP_NAME}
@@ -61,6 +58,22 @@ objects:
       group: quickstarts
       provider: s2i
 - apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      description: The database server's port.
+    labels:
+      app: ${APP_NAME}
+    name: ${APP_NAME}-mysql
+  spec:
+    ports:
+      - port: 3306
+        targetPort: 3306
+    selector:
+      app: ${APP_NAME}
+      deploymentConfig: ${APP_NAME}-mysql
+      group: quickstarts
+- apiVersion: v1
   kind: ImageStream
   metadata:
     creationTimestamp: null
@@ -72,8 +85,7 @@ objects:
       version: ${APP_VERSION}
     name: ${APP_NAME}
   spec: {}
-  status:
-    dockerImageRepository: ""
+
 - apiVersion: v1
   kind: BuildConfig
   metadata:
@@ -166,13 +178,13 @@ objects:
               fieldRef:
                 fieldPath: metadata.namespace
           - name: MYSQL_SERVICE_NAME
-            value: ${MYSQL_SERVICE_NAME}
+            value: ${APP_NAME}-mysql
           - name: MYSQL_SERVICE_DATABASE
-            value: ${MYSQL_SERVICE_DATABASE}
-          - name: MYSQL_SERVICE_USERNAME
-            value: ${MYSQL_SERVICE_USERNAME}
-          - name: MYSQL_SERVICE_PASSWORD
-            value: ${MYSQL_SERVICE_PASSWORD}
+            value: ${MYSQL_DATABASE}
+          - name: MYSQL_USERNAME
+            value: ${MYSQL_USERNAME}
+          - name: MYSQL_PASSWORD
+            value: ${MYSQL_PASSWORD}
           - name: AB_JOLOKIA_OFF
             value: "true"
           - name: JAVA_OPTIONS
@@ -211,22 +223,112 @@ objects:
           kind: ImageStreamTag
           name: ${APP_NAME}:latest
       type: ImageChange
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: ${APP_NAME}
+    name: ${APP_NAME}-mysql
+  spec:
+    replicas: 1
+    selector:
+      deploymentConfig: ${APP_NAME}-mysql
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          app: ${APP_NAME}
+          deploymentConfig: ${APP_NAME}-mysql
+        name: ${APP_NAME}-mysql
+      spec:
+        containers:
+          - env:
+              - name: MYSQL_USER
+                value: ${MYSQL_USERNAME}
+              - name: MYSQL_PASSWORD
+                value: ${MYSQL_PASSWORD}
+              - name: MYSQL_DATABASE
+                value: ${MYSQL_DATABASE}
+              - name: MYSQL_LOWER_CASE_TABLE_NAMES
+                value: ${MYSQL_LOWER_CASE_TABLE_NAMES}
+              - name: MYSQL_MAX_CONNECTIONS
+                value: ${MYSQL_MAX_CONNECTIONS}
+              - name: MYSQL_FT_MIN_WORD_LEN
+                value: ${MYSQL_FT_MIN_WORD_LEN}
+              - name: MYSQL_FT_MAX_WORD_LEN
+                value: ${MYSQL_FT_MAX_WORD_LEN}
+              - name: MYSQL_AIO
+                value: ${MYSQL_AIO}
+            image: mysql
+            imagePullPolicy: Always
+            livenessProbe:
+              initialDelaySeconds: 30
+              tcpSocket:
+                port: 3306
+              timeoutSeconds: 1
+            name: ${APP_NAME}-mysql
+            ports:
+              - containerPort: 3306
+                protocol: TCP
+            readinessProbe:
+              exec:
+                command:
+                  - /bin/sh
+                  - -i
+                  - -c
+                  - MYSQL_PWD="$MYSQL_PASSWORD" mysql -h 127.0.0.1 -u $MYSQL_USER -D $MYSQL_DATABASE
+                    -e 'SELECT 1'
+              initialDelaySeconds: 5
+              timeoutSeconds: 1
+            volumeMounts:
+              - mountPath: /var/lib/mysql/data
+                name: ${APP_NAME}-mysql-pvol
+        terminationGracePeriodSeconds: 60
+        volumes:
+          - name: ${APP_NAME}-mysql-pvol
+            persistentVolumeClaim:
+              claimName: ${APP_NAME}-mysql-claim
+    triggers:
+      - imageChangeParams:
+          automatic: true
+          containerNames:
+            - ${APP_NAME}-mysql
+          from:
+            kind: ImageStreamTag
+            name: mysql:${MYSQL_IMAGE_STREAM_TAG}
+            namespace: ${IMAGE_STREAM_NAMESPACE}
+        type: ImageChange
+      - type: ConfigChange
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    labels:
+      app: ${APP_NAME}
+    name: ${APP_NAME}-mysql-claim
+  spec:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: ${VOLUME_CAPACITY}
+
 parameters:
 - description: The name assigned to the application.
   displayName: Application Name
   name: APP_NAME
   required: true
-  value: s2i-fuse73-spring-boot-camel-rest-sql
+  value: fuse74-demo
 - description: The URL of the repository with your application source code.
   displayName: Git Repository URL
   name: GIT_REPO
   required: true
-  value: https://github.com/fabric8-quickstarts/spring-boot-camel-rest-sql.git
+  value: https://github.com/nmajorov/fuse7-spring-code-fist.git
 - description: Set this to a branch name, tag or other ref of your repository if you
     are not using the default branch.
   displayName: Git Reference
   name: GIT_REF
-  value: spring-boot-camel-rest-sql-1.0.0.fuse-731003-redhat-00003
+  value: fuse5
 - description: Exposed service name.
   displayName: Service Name
   name: SERVICE_NAME
@@ -239,16 +341,24 @@ parameters:
   value: mysql
 - description: The database hosted by the MySQL server to be used by the application.
   displayName: MySQL Server Database
-  name: MYSQL_SERVICE_DATABASE
-  value: sampledb
+  name: MYSQL_DATABASE
+  value: fuse
 - description: The username used to authenticate with the MySQL server. Leave it empty
     if authentication is disabled.
   displayName: MySQL Server Username
-  name: MYSQL_SERVICE_USERNAME
+  name: MYSQL_USERNAME
+  from: '[a-zA-Z0-9]{8}'
+  generate: expression
+  required: true
+  value: fuse
 - description: The password used to authenticate with the MySQL server. Leave it empty
     if authentication is disabled.
   displayName: MySQL Server Password
-  name: MYSQL_SERVICE_PASSWORD
+  name: MYSQL_PASSWORD
+  from: '[a-zA-Z0-9]{8}'
+  generate: expression
+  required: true
+  value: fuse
 - description: The version of the FIS S2I builder image to use.
   displayName: Builder version
   name: BUILDER_VERSION
@@ -309,3 +419,29 @@ parameters:
   name: BUILD_MEMORY_LIMIT
   required: true
   value: 0.8G
+- displayName: MySQL Lower Case Table Names
+  name: MYSQL_LOWER_CASE_TABLE_NAMES
+- description: The maximum permitted number of simultaneous client connections.
+  displayName: MySQL Maximum number of connections
+  name: MYSQL_MAX_CONNECTIONS
+- description: The minimum length of the word to be included in a FULLTEXT index.
+  displayName: MySQL FullText Minimum Word Length
+  name: MYSQL_FT_MIN_WORD_LEN
+- description: The maximum length of the word to be included in a FULLTEXT index.
+  displayName: MySQL FullText Maximum Word Length
+  name: MYSQL_FT_MAX_WORD_LEN
+- description: Controls the innodb_use_native_aio setting value if the native AIO
+    is broken.
+  displayName: MySQL AIO
+  name: MYSQL_AIO
+- description: The tag to use for the "mysql" image stream. Typically, this aligns
+    with the major.minor version of MySQL.
+  displayName: MySQL Image Stream Tag
+  name: MYSQL_IMAGE_STREAM_TAG
+  required: true
+  value: "8.0"
+- description: Size of persistent storage for database volume.
+  displayName: Database Volume Capacity
+  name: VOLUME_CAPACITY
+  required: true
+  value: 1Gi
