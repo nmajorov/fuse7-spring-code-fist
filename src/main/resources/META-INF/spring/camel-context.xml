@@ -24,4 +24,8 @@
     <beans profile="mysql">
       <import resource="classpath:META-INF/spring/mysql.xml"/>
     </beans>
+
+    <beans profile="pg">
+        <import resource="classpath:META-INF/spring/pg.xml"/>
+    </beans>
 </beans>

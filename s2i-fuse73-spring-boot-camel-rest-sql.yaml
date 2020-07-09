@@ -1,7 +1,7 @@
 apiVersion: template.openshift.io/v1
 kind: Template
 labels:
-  template: DEMO-s2i-fuse74-spring-boot-camel-rest-sql
+  template: DEMO expenses app
 metadata:
   annotations:
     description: Spring Boot, Camel REST DSL and MySQL QuickStart. This quickstart
@@ -13,7 +13,7 @@ metadata:
       the documentation of the OpenShift MySQL container image related to the mysql-ephemeral
       template.
     iconClass: icon-rh-integration
-    openshift.io/display-name: DEMO Red Hat Fuse 7.4 Camel REST SQL with Spring Boot
+    openshift.io/display-name:  DEMO expenses app  Red Hat Fuse 7.4 Camel REST SQL with Spring Boot
     openshift.io/provider-display-name: Red Hat, Inc.
     tags: quickstart,java,springboot,fis,jboss-fuse
     version: "1.3"
