@@ -111,6 +111,9 @@ dependencies {
 
     implementation("mysql:mysql-connector-java:8.0.20")
 
+    //for postgress
+    implementation("org.postgresql:postgresql:42.2.14")
+
     testImplementation("junit:junit:4.12")
     testImplementation("org.jboss.arquillian.junit:arquillian-junit-container:1.1.12.Final")
     testImplementation("org.arquillian.cube:arquillian-cube-openshift:1.9.0")
