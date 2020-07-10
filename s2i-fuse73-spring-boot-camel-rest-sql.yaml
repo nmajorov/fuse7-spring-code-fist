@@ -1,7 +1,7 @@
 apiVersion: template.openshift.io/v1
 kind: Template
 labels:
-  template: DEMO expenses app
+  template: demo-expenses-app
 metadata:
   annotations:
     description: Spring Boot, Camel REST DSL and MySQL QuickStart. This quickstart
@@ -33,10 +33,13 @@ objects:
     to:
       kind: Service
       name: ${SERVICE_NAME}
+
+# fuse spring service
 - apiVersion: v1
   kind: Service
   metadata:
     annotations:
+      description: The fuse-spring-boot server ports.
       service.alpha.openshift.io/dependencies: '[{"name": "${APP_NAME}-mysql","kind": "Service"}]'
     labels:
       app: ${APP_NAME}
@@ -46,17 +49,21 @@ objects:
       version: ${APP_VERSION}
     name: ${SERVICE_NAME}
   spec:
-    clusterIP: None
-    deprecatedPublicIPs: []
     ports:
-    - port: 9411
-      protocol: TCP
-      targetPort: 8080
+      - name: 8080-tcp
+        protocol: TCP
+        port: 8080
+        targetPort: 8080
+      - name: 8443-tcp
+        protocol: TCP
+        port: 8443
+        targetPort: 8443
+      - name: 8778-tcp
+        protocol: TCP
+        port: 8778
+        targetPort: 8778
     selector:
-      app: ${APP_NAME}
-      component: ${APP_NAME}
-      group: quickstarts
-      provider: s2i
+      deploymentconfig: ${APP_NAME}
 - apiVersion: v1
   kind: Service
   metadata:
@@ -334,7 +341,7 @@ parameters:
 - description: Exposed service name.
   displayName: Service Name
   name: SERVICE_NAME
-  value: camel-rest-sql
+  value: nfuse
 - description: Set this to the name of the TCP service of the MySQL server. You may
     need to create a server first.
   displayName: MySQL Server Service
